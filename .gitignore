@@ -1,0 +1,6 @@
+a.out
+*.vvp
+*.vcd
+
+.*.sw[op]
+.vscode/settings.json

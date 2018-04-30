@@ -88,13 +88,15 @@ module nexys3 (/*AUTOARG*/
    always @ (posedge clk)
      if (rst)
        begin
-          inst_wd[7:0] <= 0;
-          step_d[2:0]  <= 0;
+          inst_wd[7:0]  <= 0;
+          step_d[2:0]   <= 0;
+          q_step_d[2:0] <= 0;
        end
      else if (clk_en) // Down sampling
        begin
-          inst_wd[7:0] <= sw[7:0];
-          step_d[2:0]  <= {btnS, step_d[2:1]};
+          inst_wd[7:0]  <= sw[7:0];
+          step_d[2:0]   <= {btnS, step_d[2:1]};
+          q_step_d[2:0] <= {btnQ, q_step_d[2:1]};
        end
 
    // Detecting posedge of btnS
@@ -110,12 +112,12 @@ module nexys3 (/*AUTOARG*/
 
    // Detecting posedge of btnQ
    wire is_btnQ_posedge;
-   assign is_btnS_posedge = ~ q_step_d[0] & q_step_d[1];
+   assign is_btnQ_posedge = ~ q_step_d[0] & q_step_d[1];
    always @ (posedge clk)
      if (rst)
        q_inst_vld <= 1'b0;
      else if (clk_en_d)
-       q_inst_vld <= is_btnS_posedge;
+       q_inst_vld <= is_btnQ_posedge;
 	  else
 	   q_inst_vld <= 0;
 

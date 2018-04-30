@@ -41,7 +41,7 @@ module model_uart(/*AUTOARG*/
         // call display on '\r' and '\n'
         if (rxData == 10 || rxData == 13) begin
             if (buffer)
-                $display ("%d %s Received instruction: %x (%s)", $stime, name, buffer, buffer);
+                $display ("%d %s Received: %x (%s)", $stime, name, buffer, buffer);
             buffer = 32'b0;
         end
         else

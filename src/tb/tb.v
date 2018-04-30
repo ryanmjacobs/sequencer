@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 // multiply proper output: 0040, 0003, 00C0, 0100
 module tb;
-`include "seq_definitions.v"
+//`include "seq_definitions.v"
 
    reg [7:0] sw;
    reg       clk;

@@ -2,7 +2,7 @@ module seq (/*AUTOARG*/
    // Outputs
    o_tx_data, o_tx_valid,
    // Inputs
-   i_tx_busy, i_inst, i_inst_valid, clk, rst
+   i_tx_busy, i_send_inst, i_inst, i_inst_valid, clk, rst
    );
 
 `include "seq_definitions.v"
@@ -13,6 +13,7 @@ module seq (/*AUTOARG*/
    input                     i_tx_busy;
 
    // Instruction interface
+	input i_send_inst;
    input [seq_in_width-1:0]  i_inst;
    input                     i_inst_valid;
 
@@ -56,7 +57,7 @@ module seq (/*AUTOARG*/
    assign inst_op_push = (inst_op == seq_op_push);
    assign inst_op_add  = (inst_op == seq_op_add);
    assign inst_op_mult = (inst_op == seq_op_mult);
-   assign inst_op_send = (inst_op == seq_op_send);
+   assign inst_op_send = (inst_op == seq_op_send || i_send_inst);
 
    // ===========================================================================
    // Register File

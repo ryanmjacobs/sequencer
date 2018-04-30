@@ -92,7 +92,11 @@ module nexys3 (/*AUTOARG*/
        end
      else if (clk_en) // Down sampling
        begin
-          inst_wd[7:0]  <= sw[7:0];
+		    //if (is_btnQ_posedge)
+				//inst_wd[7:0] <= sw[7:0] | 8'b11000000;
+			 //else
+            inst_wd[7:0]  <= sw[7:0];
+				
             step_d[2:0] <= {btnS, step_d[2:1]};
           q_step_d[2:0] <= {btnQ, q_step_d[2:1]};
        end
@@ -107,15 +111,9 @@ module nexys3 (/*AUTOARG*/
      if (rst)
          inst_vld <= 1'b0;
      else if (clk_en_d)
-         inst_vld <= is_btnS_posedge;
+         inst_vld <= is_btnS_posedge || is_btnQ_posedge;
      else
          inst_vld <= 0;
-
-     // override our instruction with the SEND inst.
-     if (is_btnQ_posedge) begin
-         inst_wd[7:6] <= 2'b11;
-         inst_vld <= 1;
-     end
    end
 
    always @ (posedge clk)
@@ -135,6 +133,7 @@ module nexys3 (/*AUTOARG*/
              .o_tx_valid                (seq_tx_valid),
              // Inputs
              .i_tx_busy                 (uart_tx_busy),
+				 .i_send_inst               (is_btnQ_posedge),
              .i_inst                    (inst_wd[seq_in_width-1:0]),
              .i_inst_valid              (inst_vld),
              /*AUTOINST*/

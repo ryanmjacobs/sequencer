@@ -37,8 +37,7 @@ module tb;
         $readmemb("seq.code", mem);
         
         lines = mem[0];
-        $display("%0b", lines);
-
+        
         for (i = 1; i <= lines; i = i + 1) begin
           r = mem[i];
           op = r[7:6];

@@ -2,13 +2,14 @@ module uart_top (/*AUTOARG*/
    // Outputs
    o_tx, o_tx_busy, o_rx_data, o_rx_valid,
    // Inputs
-   i_rx, i_tx_data, i_tx_stb, clk, rst
+   i_rx, i_reg, i_tx_data, i_tx_stb, clk, rst
    );
 
 `include "seq_definitions.v"
    
-   output                   o_tx; // asynchronous UART TX
-   input                    i_rx; // asynchronous UART RX
+   output                   o_tx;  // asynchronous UART TX
+   input                    i_rx;  // asynchronous UART RX
+   input [1:0]              i_reg; // register referenced by switches
    
    output                   o_tx_busy;
    output [7:0]             o_rx_data;
@@ -21,9 +22,14 @@ module uart_top (/*AUTOARG*/
    input                    rst;
 
    parameter stIdle = 0;
-   parameter stNib1 = 1;
-   parameter stNL   = uart_num_nib+1;
-   parameter stCR   = uart_num_nib+2;
+
+   parameter stR0   = 1; // print 'R'
+   parameter stR1   = 2; // print <reg>
+   parameter stR2   = 3; // print ':'
+
+   parameter stNib1 = 4;
+   parameter stNL   = uart_num_nib+1; // 5
+   parameter stCR   = uart_num_nib+2; // 6
    
    /*AUTOWIRE*/
    // Beginning of automatic wires (for undeclared instantiated-module outputs)
@@ -49,7 +55,7 @@ module uart_top (/*AUTOARG*/
          stIdle:
            if (i_tx_stb)
              begin
-                state   <= stNib1;
+                state   <= stR0;
                 tx_data <= i_tx_data;
              end
          stCR:
@@ -90,6 +96,11 @@ module uart_top (/*AUTOARG*/
      case (state)
        stNL:    tfifo_in = "\n";
        stCR:    tfifo_in = "\r";
+
+       stR0:    tfifo_in = "R";
+       stR1:    tfifo_in = fnNib2ASCII(i_reg);
+       stR2:    tfifo_in = ":";
+
        default: tfifo_in = fnNib2ASCII(tx_data[seq_dp_width-1:seq_dp_width-4]);
      endcase // case (state)
    

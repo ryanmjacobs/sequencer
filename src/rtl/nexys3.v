@@ -101,25 +101,21 @@ module nexys3 (/*AUTOARG*/
 
    // Detecting posedge of btnS
    wire is_btnS_posedge;
-   assign is_btnS_posedge = ~ step_d[0] & step_d[1];
-   always @ (posedge clk)
-     if (rst)
-       inst_vld <= 1'b0;
-     else if (clk_en_d)
-       inst_vld <= is_btnS_posedge;
-	  else
-	    inst_vld <= 0;
-
-   // Detecting posedge of btnQ
    wire is_btnQ_posedge;
+   assign is_btnS_posedge = ~ step_d[0] & step_d[1];
    assign is_btnQ_posedge = ~ q_step_d[0] & q_step_d[1];
+
    always @ (posedge clk)
-     if (rst)
-       q_inst_vld <= 1'b0;
-     else if (clk_en_d)
-       q_inst_vld <= is_btnQ_posedge;
-	  else
-	   q_inst_vld <= 0;
+       if (rst) begin
+          inst_vld <= 1'b0;
+        q_inst_vld <= 1'b0;
+       end else if (clk_en_d) begin
+          inst_vld <= is_btnS_posedge;
+        q_inst_vld <= is_btnQ_posedge;
+       end else begin
+          inst_vld <= 0;
+        q_inst_vld <= 0;
+       end
 
    always @ (posedge clk)
      if (rst)

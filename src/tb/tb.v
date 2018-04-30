@@ -1,13 +1,20 @@
 `timescale 1ns / 1ps
 // multiply proper output: 0040, 0003, 00C0, 0100
 module tb;
+`include "seq_definitions.v"
 
    reg [7:0] sw;
    reg       clk;
    reg       btnS;
    reg       btnR;
-   
+   reg [7:0] mem [1023:0], r;
+
    integer   i;
+   integer lines;
+   reg [1:0] op;
+   reg [1:0] ra, rb, rc;
+   reg [3:0] num;
+
    
    /*AUTOWIRE*/
    // Beginning of automatic wires (for undeclared instantiated-module outputs)
@@ -27,16 +34,29 @@ module tb;
         #1000 btnR = 0;
         #1500000;
         
-        tskRunPUSH(0,4);
-        tskRunPUSH(0,0);
-        tskRunPUSH(1,3);
-        tskRunMULT(0,1,2);
-        tskRunADD(2,0,3);
-        tskRunSEND(0);
-        tskRunSEND(1);
-        tskRunSEND(2);
-        tskRunSEND(3);
+        $readmemb("seq.code", mem);
         
+        lines = mem[0];
+        $display("%0b", lines);
+
+        for (i = 1; i <= lines; i = i + 1) begin
+          r = mem[i];
+          op = r[7:6];
+          ra = r[5:4];
+          rb = r[3:2];
+          rc = r[1:0];
+          num = r[3:0];
+
+          if (op == seq_op_push)
+            tskRunPUSH(ra, num);
+          else if (op == seq_op_add)
+            tskRunADD(ra, rb, rc);
+          else if (op == seq_op_mult)
+            tskRunMULT(ra, rb, rc);
+          else if (op == seq_op_send)
+            tskRunSEND(ra);
+        end
+
         #1000;        
         $finish;
      end

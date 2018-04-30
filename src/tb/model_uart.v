@@ -21,6 +21,8 @@ module model_uart(/*AUTOARG*/
    event     evTxByte;
    reg       TX;
 
+   reg [31:0] buffer = 32'b0;
+
    initial
      begin
         TX = 1'b1;
@@ -30,14 +32,21 @@ module model_uart(/*AUTOARG*/
      begin
         rxData[7:0] = 8'h0;
         #(0.5*bittime);
-        repeat (8)
-          begin
-             #bittime ->evBit;
-             //rxData[7:0] = {rxData[6:0],RX};
-             rxData[7:0] = {RX,rxData[7:1]};
-          end
+
+        repeat (8) begin
+            #bittime ->evBit;
+            rxData[7:0] = {RX,rxData[7:1]};
+        end
+
+        // call display on '\r' and '\n'
+        if (rxData == 10 || rxData == 13) begin
+            if (buffer)
+                $display ("%d %s Received instruction: %x (%s)", $stime, name, buffer, buffer);
+            buffer = 32'b0;
+        end
+        else
+            buffer = {buffer,rxData};
         ->evByte;
-        $display ("%d %s Received byte %02x (%s)", $stime, name, rxData, rxData);
      end
 
    task tskRxData;

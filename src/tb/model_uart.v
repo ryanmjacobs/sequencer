@@ -21,7 +21,7 @@ module model_uart(/*AUTOARG*/
    event     evTxByte;
    reg       TX;
 
-   reg [63:0] buffer = 64'b0;
+   reg [55:0] buffer = 56'b0;
 
    initial
      begin
@@ -42,7 +42,7 @@ module model_uart(/*AUTOARG*/
         if (rxData == 10 || rxData == 13) begin
             if (buffer)
                 $display ("%d %s Received: %x (%s)", $stime, name, buffer, buffer);
-            buffer = 0;
+            buffer = 56'b0;
         end
         else
             buffer = {buffer,rxData};

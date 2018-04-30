@@ -28,8 +28,8 @@ module uart_top (/*AUTOARG*/
    parameter stR2   = 3; // print ':'
 
    parameter stNib1 = 4;
-   parameter stNL   = stNib1+uart_num_nib+1; // 9
-   parameter stCR   = stNib1+uart_num_nib+2; // 10
+   parameter stNL   = stNib1+uart_num_nib;   // 8
+   parameter stCR   = stNib1+uart_num_nib+1; // 9
    
    /*AUTOWIRE*/
    // Beginning of automatic wires (for undeclared instantiated-module outputs)
@@ -63,11 +63,11 @@ module uart_top (/*AUTOARG*/
          default:
            if (~tfifo_full)
              begin
-                state <= state + 1;
-
                 // only shift fifo if we are actually outputting nibbles
-                if (state > stNib1)
+                if (state >= stNib1)
                     tx_data <= {tx_data,4'b0000};
+
+                state <= state + 1;
              end
        endcase // case (state)
 

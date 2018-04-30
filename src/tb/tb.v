@@ -7,14 +7,10 @@ module tb;
    reg       clk;
    reg       btnS;
    reg       btnR;
-   reg [7:0] mem [1023:0], r;
+   reg [7:0] mem [1023:0];
 
    integer   i;
    integer lines;
-   reg [1:0] op;
-   reg [1:0] ra, rb, rc;
-   reg [3:0] num;
-
    
    /*AUTOWIRE*/
    // Beginning of automatic wires (for undeclared instantiated-module outputs)
@@ -39,21 +35,7 @@ module tb;
         lines = mem[0];
         
         for (i = 1; i <= lines; i = i + 1) begin
-          r = mem[i];
-          op = r[7:6];
-          ra = r[5:4];
-          rb = r[3:2];
-          rc = r[1:0];
-          num = r[3:0];
-
-          if (op == seq_op_push)
-            tskRunPUSH(ra, num);
-          else if (op == seq_op_add)
-            tskRunADD(ra, rb, rc);
-          else if (op == seq_op_mult)
-            tskRunMULT(ra, rb, rc);
-          else if (op == seq_op_send)
-            tskRunSEND(ra);
+          tskRunInst(mem[i]);
         end
 
         #1000;        

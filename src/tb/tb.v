@@ -1,5 +1,5 @@
 `timescale 1ns / 1ps
-
+// multiply proper output: 0040, 0003, 00C0, 0100
 module tb;
 
    reg [7:0] sw;

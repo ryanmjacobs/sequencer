@@ -20,4 +20,4 @@ module seq_mult (/*AUTOARG*/
    assign o_valid = i_valid;
    assign o_data  = i_data_a * i_data_b;
    
-endmodule // seq_add
+endmodule // seq_mult

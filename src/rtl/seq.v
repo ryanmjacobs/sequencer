@@ -36,6 +36,7 @@ module seq (/*AUTOARG*/
    wire                    inst_op_push;
    wire                    inst_op_send;
    wire                    inst_op_add;
+   wire                    inst_op_mult;
 
    wire [seq_rn_width-1:0] rf_wsel;
    wire                    rf_wstb;
@@ -54,6 +55,7 @@ module seq (/*AUTOARG*/
 
    assign inst_op_push = (inst_op == seq_op_push);
    assign inst_op_add  = (inst_op == seq_op_add);
+   assign inst_op_mult = (inst_op == seq_op_mult);
    assign inst_op_send = (inst_op == seq_op_send);
 
    // ===========================================================================
@@ -81,7 +83,7 @@ module seq (/*AUTOARG*/
    // ALU
    // ===========================================================================
 
-   assign alu_valid_in = i_inst_valid & (inst_op_push | inst_op_add);
+   assign alu_valid_in = i_inst_valid & (inst_op_push | inst_op_add| inst_op_mult);
    
    seq_alu alu_ (// Outputs
                  .o_data                (alu_data[alu_width-1:0]),

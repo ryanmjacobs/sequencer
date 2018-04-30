@@ -43,7 +43,7 @@ module uart_top (/*AUTOARG*/
    wire                 tfifo_rd;
    reg                  tfifo_rd_z;
    reg [seq_dp_width-1:0]  tx_data;
-   reg [2:0]               state;
+   reg [4:0]               state;
 
    assign o_tx_busy = (state!=stIdle);
    
